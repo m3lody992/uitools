@@ -91,7 +91,7 @@ open class BaseViewController: UIViewController {
         }
     }
 
-    func presentAlert(withTitle title: String?, andMessage message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], onDismiss: (() -> Void)? = nil, onOk: (() -> Void)? = nil) {
+    public func presentAlert(withTitle title: String?, andMessage message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], onDismiss: (() -> Void)? = nil, onOk: (() -> Void)? = nil) {
             PresentScheduledNotificationService.addNotificationAndPresent(.init(title: title, message: message, imageURL: imageURL, buttons: buttons, onOk: onOk, onDismiss: onDismiss))
         }
 
