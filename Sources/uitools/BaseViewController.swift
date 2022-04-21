@@ -71,12 +71,12 @@ open class BaseViewController: UIViewController {
 
     lazy var errorHUD = JGProgressHUD(style: traitCollection.userInterfaceStyle == .light ? .dark : .light)
 
-    public func showErrorHUD(withText text: String? = nil) {
+    public func showErrorHUD(withText text: String? = nil, delay: Double = 3.0) {
         DispatchQueue.main.async {
             self.errorHUD.textLabel.text = text
             self.errorHUD.indicatorView = JGProgressHUDErrorIndicatorView()
             self.errorHUD.show(in: self.view)
-            self.errorHUD.dismiss(afterDelay: 3.0)
+            self.errorHUD.dismiss(afterDelay: delay)
         }
     }
 
@@ -91,9 +91,9 @@ open class BaseViewController: UIViewController {
         }
     }
 
-    public func presentAlert(withTitle title: String?, andMessage message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], onOk: (() -> Void)? = nil) {
-        PresentScheduledNotificationService.addNotificationAndPresent(.init(title: title, message: message, imageURL: imageURL, buttons: buttons, completion: onOk))
-    }
+    func presentAlert(withTitle title: String?, andMessage message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], onDismiss: (() -> Void)? = nil, onOk: (() -> Void)? = nil) {
+            PresentScheduledNotificationService.addNotificationAndPresent(.init(title: title, message: message, imageURL: imageURL, buttons: buttons, onOk: onOk, onDismiss: onDismiss))
+        }
 
     public func presentAlert(withError error: Error) {
         // "Oops, something went wrong!"

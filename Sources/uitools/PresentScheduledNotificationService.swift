@@ -15,14 +15,16 @@ public struct NotificationInfo {
     let message: String?
     let imageURL: URL?
     let buttons: [AlertButtonOption]
-    let completion: (() -> Void)? // Completion only executes on button press of .ok
+    let onOK: (() -> Void)? // Completion only executes on button press of .ok
+    let onDismiss: (() -> Void)?
 
-    public init(title: String?, message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], completion: (() -> Void)? = nil) {
+    public init(title: String?, message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], onOk: (() -> Void)? = nil, onDismiss: (() -> Void)? = nil) {
         self.title = title
         self.message = message
         self.imageURL = imageURL
         self.buttons = buttons
-        self.completion = completion
+        self.onOK = onOk
+        self.onDismiss = onDismiss
     }
 
 }
@@ -60,9 +62,10 @@ public struct PresentScheduledNotificationService {
             for notification in storedNotifications {
                 DispatchQueue.main.async {
                     presentAlert(withTitle: notification.title, andMessage: notification.message, imageURL: notification.imageURL, buttons: notification.buttons) {
-                        notification.completion?()
+                        notification.onOK?()
                         semaphore.signal()
                     } onDismiss: {
+                        notification.onDismiss?()
                         semaphore.signal()
                     }
                     storedNotifications.removeAll(where: { $0.id == notification.id })
@@ -81,6 +84,7 @@ public struct PresentScheduledNotificationService {
     // Image URL is only for showing promotional app logo, rating is applied automatically. If we will need images without rating this should be updated.
     private static func presentAlert(withTitle title: String?, andMessage message: String?, imageURL: URL? = nil, buttons: [AlertButtonOption] = [.ok], onOk: (() -> Void)? = nil, onDismiss: (() -> Void)? = nil) {
         DispatchQueue.main.async {
+
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
             if let imageURL = imageURL {
