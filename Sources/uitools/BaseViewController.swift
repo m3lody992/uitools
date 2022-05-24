@@ -46,7 +46,7 @@ open class BaseViewController: UIViewController {
         try? reachability?.startNotifier()
     }
 
-    @objc public func getAsters() {
+    @objc open func getAsters() {
         tabBarController?.selectedIndex = 1
     }
 
